@@ -4,6 +4,7 @@ import SettingsForm from "./components/settings-form";
 import "./index.css";
 import { type FormValues } from "./lib/schemas/form-schema";
 import type { UserData } from "./types/data";
+import { PromptDataProvider } from "./contexts/prompt-data-context";
 
 function App() {
   const [page, setPage] = useState<"main" | "settings" | "result">("main");
@@ -71,7 +72,7 @@ function App() {
   }
 
   return (
-    <>
+    <PromptDataProvider>
       <div className="h-screen w-screen overflow-hidden">
         <div
           className={`flex h-full transition-transform duration-500 ease-in-out`}
@@ -86,7 +87,7 @@ function App() {
           <SettingsForm onNavigate={handleCloseSettings} />
         </div>
       </div>
-    </>
+    </PromptDataProvider>
   );
 }
 
