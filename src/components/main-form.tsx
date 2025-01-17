@@ -40,8 +40,9 @@ function MainForm({ onNavigate }: { onNavigate: () => void }) {
     mode: "onChange",
     defaultValues: {
       salutation: "Dear Hiring Manager,",
-      jobDescription: "",
-      // jobDescription: "We are Awesome Co. and we are looking for a Software Engineer to join our team. You will be working on our core product, which is a platform that helps people write better cover letters. You will be responsible for building new features, fixing bugs, and improving the performance of our platform. The ideal candidate is passionate about writing clean code, has experience with React and Node.js, and is a great team player. If you are interested in this position, please send us your resume and a cover letter explaining why you are a good fit for this role.",
+      // jobDescription: "",
+      jobDescription:
+        "We are Awesome Co. and we are looking for a Software Engineer to join our team. You will be working on our core product, which is a platform that helps people write better cover letters. You will be responsible for building new features, fixing bugs, and improving the performance of our platform. The ideal candidate is passionate about writing clean code, has experience with React and Node.js, and is a great team player. If you are interested in this position, please send us your resume and a cover letter explaining why you are a good fit for this role.",
       additionalNotes: "",
       settings: {
         apiKey: "",
@@ -64,7 +65,8 @@ function MainForm({ onNavigate }: { onNavigate: () => void }) {
   });
 
   const {
-    handleSubmit,
+    control,
+    // handleSubmit,
     formState: { isValid, errors },
     watch,
   } = form;
@@ -127,7 +129,7 @@ function MainForm({ onNavigate }: { onNavigate: () => void }) {
     getStoredSettings();
   }, []); */
 
-  useEffect(() => {
+  /* useEffect(() => {
     const subscription = watch((formValues) => {
       const systemPromptChars = 500; // approx
       const {
@@ -146,7 +148,7 @@ function MainForm({ onNavigate }: { onNavigate: () => void }) {
     });
 
     return () => subscription.unsubscribe();
-  }, [watch]);
+  }, [watch]); */
 
   return (
     <div className="relative flex h-full min-w-full flex-col p-8 text-left">
@@ -161,10 +163,10 @@ function MainForm({ onNavigate }: { onNavigate: () => void }) {
       <h1 className="text-base font-bold">Generate cover letter</h1>
       <FormProvider {...form}>
         <Form {...form}>
-          <form onSubmit={handleSubmit(onSubmit)}>
-            <div className="flex flex-col gap-4">
+          <form onSubmit={form.handleSubmit(onSubmit)}>
+            <div className="mt-4 flex flex-col gap-4">
               <FormField
-                control={form.control}
+                control={control}
                 name="salutation"
                 render={({ field }) => (
                   <FormItem className="flex flex-col gap-1">
@@ -179,7 +181,7 @@ function MainForm({ onNavigate }: { onNavigate: () => void }) {
                 )}
               />
               <FormField
-                control={form.control}
+                control={control}
                 name="jobDescription"
                 render={({ field }) => (
                   <FormItem className="flex flex-col gap-1">
@@ -198,7 +200,7 @@ function MainForm({ onNavigate }: { onNavigate: () => void }) {
                 )}
               />
               <FormField
-                control={form.control}
+                control={control}
                 name="additionalNotes"
                 render={({ field }) => (
                   <FormItem className="flex flex-col gap-1">
