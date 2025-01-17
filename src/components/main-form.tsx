@@ -15,7 +15,7 @@ import { Input } from "./ui/input";
 import Spinner from "./ui/spinner";
 import { Textarea } from "./ui/textarea";
 import "@/index.css";
-import { formSchema, type FormValues } from "@/lib/schemas/form-schema";
+import { mainFormSchema, type MainFormValues } from "@/lib/schemas/form-schema";
 import { countChars } from "@/lib/utils";
 import type { UserData } from "@/types/data";
 import { Settings } from "lucide-react";
@@ -35,8 +35,8 @@ function MainForm({ onNavigate }: { onNavigate: () => void }) {
     completion: 0,
   });
 
-  const form = useForm<FormValues>({
-    resolver: zodResolver(formSchema),
+  const form = useForm<MainFormValues>({
+    resolver: zodResolver(mainFormSchema),
     mode: "onChange",
     defaultValues: {
       salutation: "Dear Hiring Manager,",

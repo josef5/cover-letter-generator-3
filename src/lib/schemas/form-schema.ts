@@ -36,3 +36,11 @@ export const settingsSchema = z.object({
 });
 
 export type SettingsValues = z.infer<typeof settingsSchema>;
+
+export const mainFormSchema = z.object({
+  jobDescription: z.string().min(1, { message: "Required" }),
+  salutation: z.string().min(1, { message: "Required" }),
+  additionalNotes: z.string().optional(),
+});
+
+export type MainFormValues = z.infer<typeof mainFormSchema>;
