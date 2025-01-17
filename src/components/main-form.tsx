@@ -19,10 +19,7 @@ import { mainFormSchema, type MainFormValues } from "@/lib/schemas/form-schema";
 import { countChars } from "@/lib/utils";
 import type { UserData } from "@/types/data";
 import { Settings } from "lucide-react";
-
-function TokenCount({ children }: { children: React.ReactNode }) {
-  return <div className="pr-2 text-right text-xs">{children}</div>;
-}
+import TokenCount from "./ui/token-count";
 
 function MainForm({ onNavigate }: { onNavigate: () => void }) {
   const [coverLetterText, setCoverLetterText] = useState("");
