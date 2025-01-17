@@ -13,14 +13,14 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { type SettingsValues, settingsSchema } from "@/lib/schemas/form-schema";
-import { FormProvider, useForm } from "react-hook-form";
-import { Input } from "./ui/input";
-import { Textarea } from "./ui/textarea";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { X } from "lucide-react";
+import { FormProvider, useForm } from "react-hook-form";
 import { Button } from "./ui/button";
+import { Input } from "./ui/input";
+import { Textarea } from "./ui/textarea";
 
-function Settings({ onNavigate }: { onNavigate: () => void }) {
+function SettingsForm({ onNavigate }: { onNavigate: () => void }) {
   // const { control } = useFormContext<FormValues>();
   const models = settingsSchema.shape.model._def.values;
 
@@ -46,7 +46,12 @@ function Settings({ onNavigate }: { onNavigate: () => void }) {
       }, */
   });
 
-  const { control } = form;
+  const {
+    control,
+    // handleSubmit,
+    formState: { isValid, errors },
+    watch,
+  } = form;
 
   return (
     <div className="relative flex h-full min-w-full flex-col p-8 text-left">
@@ -58,7 +63,6 @@ function Settings({ onNavigate }: { onNavigate: () => void }) {
       >
         <X />
       </Button>
-
       <h1 className="text-base font-bold">Settings</h1>
       <FormProvider {...form}>
         <Form {...form}>
@@ -212,6 +216,9 @@ function Settings({ onNavigate }: { onNavigate: () => void }) {
               </div>
               {/*  TODO: Add skillset? */}
               {/* TODO: Add additional settings - e.g. British English */}
+              <Button type="submit" disabled={!isValid}>
+                Save
+              </Button>
             </div>
           </form>
         </Form>
@@ -220,4 +227,4 @@ function Settings({ onNavigate }: { onNavigate: () => void }) {
   );
 }
 
-export default Settings;
+export default SettingsForm;

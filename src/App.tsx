@@ -1,6 +1,6 @@
 import { useState } from "react";
 import MainForm from "./components/main-form";
-import Settings from "./components/settings";
+import SettingsForm from "./components/settings-form";
 import "./index.css";
 import { type FormValues } from "./lib/schemas/form-schema";
 import type { UserData } from "./types/data";
@@ -83,7 +83,7 @@ function App() {
           <MainForm onNavigate={handleShowSettings} />
 
           {/* Page Two */}
-          <Settings onNavigate={handleCloseSettings} />
+          <SettingsForm onNavigate={handleCloseSettings} />
         </div>
       </div>
     </>
