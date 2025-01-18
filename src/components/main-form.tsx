@@ -20,6 +20,7 @@ import { countChars } from "@/lib/utils";
 import type { UserData } from "@/types/data";
 import { Settings } from "lucide-react";
 import TokenCount from "./ui/token-count";
+import { usePromptDataContext } from "@/contexts/prompt-data-context";
 
 function MainForm({ onNavigate }: { onNavigate: () => void }) {
   const [coverLetterText, setCoverLetterText] = useState("");
@@ -32,6 +33,9 @@ function MainForm({ onNavigate }: { onNavigate: () => void }) {
     completion: 0,
   });
 
+  const { promptData, setPromptData, isSettingsValid, setIsSettingsValid } =
+    usePromptDataContext();
+
   const form = useForm<MainFormValues>({
     resolver: zodResolver(mainFormSchema),
     mode: "onChange",
@@ -41,37 +45,21 @@ function MainForm({ onNavigate }: { onNavigate: () => void }) {
       jobDescription:
         "We are Awesome Co. and we are looking for a Software Engineer to join our team. You will be working on our core product, which is a platform that helps people write better cover letters. You will be responsible for building new features, fixing bugs, and improving the performance of our platform. The ideal candidate is passionate about writing clean code, has experience with React and Node.js, and is a great team player. If you are interested in this position, please send us your resume and a cover letter explaining why you are a good fit for this role.",
       additionalNotes: "",
-      settings: {
-        apiKey: "",
-        name: "",
-        model: "gpt-3.5-turbo",
-        temperature: 0.7,
-        wordLimit: 300,
-        workExperience: "",
-      },
-      /* settings: {
-        apiKey: "abc123",
-        name: "Jose Espejo",
-        model: "gpt-3.5-turbo",
-        temperature: 0.7,
-        wordLimit: 300,
-        workExperience:
-          "I am a frontend developer with 4 years of experience in React, Vue and TypeScript. In my last job I worked at a leading marketing agency; Tribal Worldwide, where our main client was Volkswagen and its subsidies Skoda and SEAT. I was a part of a team that developed and maintained a series of web apps in React and Typescript. A selection of my work can be viewed at https://joseespejo.info",
-      }, */
     },
   });
 
   const {
     control,
     // handleSubmit,
-    formState: { isValid, errors },
+    formState: { isValid },
     watch,
   } = form;
 
-  function onSubmit(data: FormValues) {
-    // window.api?.setStoreValues(data.settings);
+  function onSubmit(data: MainFormValues) {
+    const compositeData = { ...data, settings: promptData.settings };
+    console.log("compositeData :", compositeData);
 
-    fetchCoverLetterText(data);
+    fetchCoverLetterText(compositeData);
   }
 
   async function fetchCoverLetterText(userData: UserData) {
@@ -80,10 +68,6 @@ function MainForm({ onNavigate }: { onNavigate: () => void }) {
     setIsLoading(true);
 
     try {
-      /* if (!window.api?.fetchCompletion) {
-        throw new Error("API not available");
-      } */
-
       const data = await import("@/mock-response.json");
       // const data = await window.api.fetchCompletion(userData);
 
@@ -113,46 +97,46 @@ function MainForm({ onNavigate }: { onNavigate: () => void }) {
     }
   }
 
-  /* useEffect(() => {
-    async function getStoredSettings() {
-      const settings = await window.api?.getStoreValues();
-      console.log("Stored settings:", settings);
+  function calculateEstimatedTokens(formValues: MainFormValues) {
+    const systemPromptChars = 500; // approx
 
-      if (Object.keys(settings).length > 0) {
-        form.setValue("settings", settings, { shouldValidate: true });
-      }
-    }
+    const {
+      name = "",
+      workExperience = "",
+      wordLimit = 300,
+    } = promptData.settings;
 
-    getStoredSettings();
-  }, []); */
+    const countableFormValues = {
+      ...formValues,
+      settings: { name, workExperience, wordLimit },
+    };
 
-  /* useEffect(() => {
+    const formCharacterCount = countChars(countableFormValues);
+    const total = formCharacterCount + systemPromptChars;
+
+    setEstimatedTokens(Math.round(total / 4));
+  }
+
+  // Calculate estimated tokens on main form change
+  useEffect(() => {
     const subscription = watch((formValues) => {
-      const systemPromptChars = 500; // approx
-      const {
-        name = "",
-        workExperience = "",
-        wordLimit = 300,
-      } = formValues.settings ?? {};
-      const countableFormValues = {
-        ...formValues,
-        settings: { name, workExperience, wordLimit },
-      };
-      const formCharacterCount = countChars(countableFormValues);
-      const total = formCharacterCount + systemPromptChars;
-
-      setEstimatedTokens(Math.round(total / 4));
+      calculateEstimatedTokens(formValues as MainFormValues);
     });
 
     return () => subscription.unsubscribe();
-  }, [watch]); */
+  }, [watch, promptData.settings]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  // Calculate estimated tokens on prompt data change (settings)
+  useEffect(() => {
+    calculateEstimatedTokens(form.getValues());
+  }, [promptData]); // eslint-disable-line react-hooks/exhaustive-deps
 
   return (
     <div className="relative flex h-full min-w-full flex-col p-8 text-left">
       <Button
         variant="ghost"
         size="icon"
-        className="absolute right-4 top-4"
+        className={`absolute right-4 top-4 ${!isSettingsValid ? "text-red-500" : ""}`}
         onClick={onNavigate}
       >
         <Settings />
@@ -211,7 +195,7 @@ function MainForm({ onNavigate }: { onNavigate: () => void }) {
                   </FormItem>
                 )}
               />
-              <Button type="submit" disabled={!isValid}>
+              <Button type="submit" disabled={!isValid || !isSettingsValid}>
                 Generate
               </Button>
               {!coverLetterText && (

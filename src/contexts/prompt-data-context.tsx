@@ -1,16 +1,9 @@
-import React, {
-  createContext,
-  ReactNode,
-  useContext,
-  useEffect,
-  useRef,
-  useState,
-} from "react";
 import { FormValues } from "@/lib/schemas/form-schema";
+import { createContext, ReactNode, useContext, useState } from "react";
 
 export type PromptDataContextValue = {
-  data: FormValues;
-  setData: (data: FormValues) => void;
+  promptData: FormValues;
+  setPromptData: (data: FormValues) => void;
   isSettingsValid: boolean;
   setIsSettingsValid: (value: boolean) => void;
 };
@@ -19,9 +12,11 @@ export const PromptDataContext = createContext<PromptDataContextValue>(
   {} as PromptDataContextValue,
 );
 
+// TODO: Convert to just Settings Data
+
 export function PromptDataProvider({ children }: { children: ReactNode }) {
   // TODO: Consolidate this with the main form
-  const [data, setData] = useState<FormValues>({
+  const [promptData, setPromptData] = useState<FormValues>({
     salutation: "Dear Hiring Manager,",
     jobDescription: "",
     additionalNotes: "",
@@ -35,11 +30,13 @@ export function PromptDataProvider({ children }: { children: ReactNode }) {
     },
   });
 
+  // setPromptData((prev) => ({...prev}));
+
   const [isSettingsValid, setIsSettingsValid] = useState<boolean>(false);
 
   const value = {
-    data,
-    setData,
+    promptData,
+    setPromptData,
     isSettingsValid,
     setIsSettingsValid,
   };

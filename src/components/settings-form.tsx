@@ -12,16 +12,21 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { type SettingsValues, settingsSchema } from "@/lib/schemas/form-schema";
+import {
+  FormValues,
+  type SettingsValues,
+  settingsSchema,
+} from "@/lib/schemas/form-schema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { X } from "lucide-react";
-import { FormProvider, useForm } from "react-hook-form";
+import { FormProvider, set, useForm } from "react-hook-form";
 import { Button } from "./ui/button";
 import { Input } from "./ui/input";
 import { Textarea } from "./ui/textarea";
+import { usePromptDataContext } from "@/contexts/prompt-data-context";
+import { useEffect } from "react";
 
 function SettingsForm({ onNavigate }: { onNavigate: () => void }) {
-  // const { control } = useFormContext<FormValues>();
   const models = settingsSchema.shape.model._def.values;
 
   const form = useForm<SettingsValues>({
@@ -53,6 +58,39 @@ function SettingsForm({ onNavigate }: { onNavigate: () => void }) {
     watch,
   } = form;
 
+  const { promptData, setPromptData, setIsSettingsValid } =
+    usePromptDataContext();
+
+  function handleSubmit(data: SettingsValues) {
+    setPromptData({ ...promptData, settings: data });
+    setIsSettingsValid(true);
+    localStorage.setItem("settings", JSON.stringify(data));
+
+    onNavigate();
+  }
+
+  // Watch for changes in isValid
+  useEffect(() => {
+    setIsSettingsValid(isValid);
+  }, [isValid, setIsSettingsValid]);
+
+  useEffect(() => {
+    if (isValid) {
+      setPromptData({ ...promptData, settings: form.getValues() });
+    }
+  }, [isValid]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  useEffect(() => {
+    const storedData = localStorage.getItem("settings");
+
+    if (storedData) {
+      const parsedData = JSON.parse(storedData);
+
+      form.reset(parsedData);
+      form.trigger();
+    }
+  }, [form]);
+
   return (
     <div className="relative flex h-full min-w-full flex-col p-8 text-left">
       <Button
@@ -66,7 +104,7 @@ function SettingsForm({ onNavigate }: { onNavigate: () => void }) {
       <h1 className="text-base font-bold">Settings</h1>
       <FormProvider {...form}>
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(() => {})}>
+          <form onSubmit={form.handleSubmit(handleSubmit)}>
             <div className="mt-4 flex flex-col gap-4">
               <FormField
                 control={control}
