@@ -1,13 +1,15 @@
 import { useState } from "react";
+import CoverLetterPage from "./components/cover-letter-page";
 import MainForm from "./components/main-form";
 import SettingsForm from "./components/settings-form";
+import { PromptDataProvider } from "./contexts/prompt-data-context";
 import "./index.css";
 import { type FormValues } from "./lib/schemas/form-schema";
 import type { UserData } from "./types/data";
-import { PromptDataProvider } from "./contexts/prompt-data-context";
 
 function App() {
   const [page, setPage] = useState<"main" | "settings" | "result">("main");
+  const [slide, setSlide] = useState<"left" | "right">("left");
   const [coverLetterText, setCoverLetterText] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -18,19 +20,31 @@ function App() {
     completion: 0,
   });
 
-  function onSubmit(data: FormValues) {
-    // window.api?.setStoreValues(data.settings);
+  function handleSubmit(data: FormValues) {
+    console.log("data :", data);
 
     fetchCoverLetterText(data);
   }
 
   function handleShowSettings() {
     setPage("settings");
+    setSlide("right");
   }
 
   function handleCloseSettings() {
     setPage("main");
+    setSlide("left");
   }
+
+  async function handleCloseCoverLetter() {
+    setSlide("left");
+
+    await sleep(550);
+    setPage("main");
+  }
+
+  const sleep = (ms: number) =>
+    new Promise((resolve) => setTimeout(resolve, ms));
 
   async function fetchCoverLetterText(userData: UserData) {
     setCoverLetterText("");
@@ -38,16 +52,15 @@ function App() {
     setIsLoading(true);
 
     try {
-      /* if (!window.api?.fetchCompletion) {
-        throw new Error("API not available");
-      } */
-
+      //*
       const data = await import("./mock-response.json");
+      await sleep(1000);
       // const data = await window.api.fetchCompletion(userData);
-
+      /*/
       if (!data) {
         throw new Error("API response is empty");
       }
+      //*/
 
       const {
         chatCompletion: {
@@ -62,6 +75,8 @@ function App() {
       });
 
       setCoverLetterText(data.chatCompletion.choices[0].message.content);
+      setSlide("right");
+      setPage("result");
     } catch (error) {
       console.error(error);
 
@@ -77,14 +92,21 @@ function App() {
         <div
           className={`flex h-full transition-transform duration-500 ease-in-out`}
           style={{
-            transform: `translateX(${page === "main" ? "0" : "-100%"})`,
+            transform: `translateX(${slide === "left" ? "0" : "-100%"})`,
           }}
         >
           {/* Page One */}
-          <MainForm onNavigate={handleShowSettings} />
+          <MainForm onNavigate={handleShowSettings} onSubmit={handleSubmit} />
 
           {/* Page Two */}
-          <SettingsForm onNavigate={handleCloseSettings} />
+          {page === "result" ? (
+            <CoverLetterPage
+              text={coverLetterText}
+              onNavigate={handleCloseCoverLetter}
+            />
+          ) : (
+            <SettingsForm onNavigate={handleCloseSettings} />
+          )}
         </div>
       </div>
     </PromptDataProvider>
