@@ -15,14 +15,24 @@ import { Input } from "./ui/input";
 import Spinner from "./ui/spinner";
 import { Textarea } from "./ui/textarea";
 import "@/index.css";
-import { mainFormSchema, type MainFormValues } from "@/lib/schemas/form-schema";
+import {
+  type FormValues,
+  type MainFormValues,
+  mainFormSchema,
+} from "@/lib/schemas/form-schema";
 import { countChars } from "@/lib/utils";
 import type { UserData } from "@/types/data";
 import { Settings } from "lucide-react";
 import TokenCount from "./ui/token-count";
 import { usePromptDataContext } from "@/contexts/prompt-data-context";
 
-function MainForm({ onNavigate }: { onNavigate: () => void }) {
+function MainForm({
+  onNavigate,
+  onSubmit,
+}: {
+  onNavigate: () => void;
+  onSubmit: (data: FormValues) => void;
+}) {
   const [coverLetterText, setCoverLetterText] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -55,14 +65,19 @@ function MainForm({ onNavigate }: { onNavigate: () => void }) {
     watch,
   } = form;
 
-  function onSubmit(data: MainFormValues) {
+  function handleSubmit(data: MainFormValues) {
+    const compositeData = { ...data, settings: promptData.settings };
+    onSubmit(compositeData);
+  }
+
+  /* function onSubmit(data: MainFormValues) {
     const compositeData = { ...data, settings: promptData.settings };
     console.log("compositeData :", compositeData);
 
     fetchCoverLetterText(compositeData);
-  }
+  } */
 
-  async function fetchCoverLetterText(userData: UserData) {
+  /* async function fetchCoverLetterText(userData: UserData) {
     setCoverLetterText("");
     setError(null);
     setIsLoading(true);
@@ -95,7 +110,7 @@ function MainForm({ onNavigate }: { onNavigate: () => void }) {
     } finally {
       setIsLoading(false);
     }
-  }
+  } */
 
   function calculateEstimatedTokens(formValues: MainFormValues) {
     const systemPromptChars = 500; // approx
@@ -144,7 +159,7 @@ function MainForm({ onNavigate }: { onNavigate: () => void }) {
       <h1 className="text-base font-bold">Generate cover letter</h1>
       <FormProvider {...form}>
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)}>
+          <form onSubmit={form.handleSubmit(handleSubmit)}>
             <div className="mt-4 flex flex-col gap-4">
               <FormField
                 control={control}
