@@ -5,7 +5,7 @@ import SettingsForm from "./components/settings-form";
 import { PromptDataProvider } from "./contexts/prompt-data-context";
 import "./index.css";
 import { type FormValues } from "./lib/schemas/form-schema";
-import type { UserData } from "./types/data";
+import { OpenAI } from "openai";
 
 function App() {
   const [page, setPage] = useState<"main" | "settings" | "result">("main");
@@ -13,7 +13,6 @@ function App() {
   const [coverLetterText, setCoverLetterText] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [estimatedTokens, setEstimatedTokens] = useState(0);
   const [usageData, setUsageData] = useState({
     total: 0,
     prompt: 0,
@@ -46,27 +45,102 @@ function App() {
   const sleep = (ms: number) =>
     new Promise((resolve) => setTimeout(resolve, ms));
 
-  async function fetchCoverLetterText(userData: UserData) {
+  async function fetchCoverLetterText(userData: FormValues) {
     setCoverLetterText("");
     setError(null);
     setIsLoading(true);
 
+    let data = null;
+
     try {
-      //*
+      /*
       const data = await import("./mock-response.json");
       await sleep(1000);
-      // const data = await window.api.fetchCompletion(userData);
       /*/
+      const {
+        salutation,
+        jobDescription,
+        additionalNotes,
+        settings: {
+          apiKey,
+          name,
+          model,
+          temperature,
+          wordLimit,
+          workExperience,
+        },
+      } = userData;
+
+      const prompt = `Here is a job description, write a cover letter for this job on behalf of the user: ${jobDescription}.`;
+
+      try {
+        const openai = new OpenAI({ apiKey, dangerouslyAllowBrowser: true });
+
+        const chatCompletion = await openai.chat.completions.create({
+          messages: [
+            {
+              role: "system",
+              content:
+                "You are an expert in recruitment and job applications. Write a cover letter for this job.",
+            },
+            {
+              role: "system",
+              content: `Use the users work experience to explain why they are a good fit for the job: ${workExperience}`,
+            },
+            {
+              role: "system",
+              content:
+                "Although we call it a letter it will be sent digitally, so we dont need subject line or an address or date.",
+            },
+            {
+              role: "system",
+              content: "Do not start with a subject line",
+            },
+            {
+              role: "system",
+              content: `Make sure to include the salutation ${salutation}`,
+            },
+            {
+              role: "system",
+              content: `Sign off with the users name ${name}`,
+            },
+            {
+              role: "system",
+              content: `The cover letter should be no more than ${wordLimit} words long and should explain why you are a good fit for the job.`,
+            },
+            { role: "system", content: additionalNotes ?? "" },
+            { role: "user", content: prompt },
+          ],
+          temperature,
+          model,
+        });
+
+        data = { chatCompletion };
+      } catch (error) {
+        console.error(error);
+        setError((error as Error).message);
+      }
+      //*/
+
       if (!data) {
         throw new Error("API response is empty");
       }
-      //*/
+
+      console.log("data :", data);
 
       const {
         chatCompletion: {
           usage: { total_tokens, prompt_tokens, completion_tokens },
         },
-      } = data;
+      } = data as {
+        chatCompletion: {
+          usage: {
+            total_tokens: number;
+            prompt_tokens: number;
+            completion_tokens: number;
+          };
+        };
+      };
 
       setUsageData({
         total: total_tokens,
@@ -74,7 +148,9 @@ function App() {
         completion: completion_tokens,
       });
 
-      setCoverLetterText(data.chatCompletion.choices[0].message.content);
+      setCoverLetterText(
+        data.chatCompletion.choices[0].message.content as string,
+      );
       setSlide("right");
       setPage("result");
     } catch (error) {
