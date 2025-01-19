@@ -106,7 +106,7 @@ function MainForm({
     }
   } */
 
-  function calculateEstimatedTokens(formValues: MainFormValues) {
+  function getEstimatedTokens(formValues: MainFormValues) {
     const systemPromptChars = 500; // approx
 
     const {
@@ -123,13 +123,14 @@ function MainForm({
     const formCharacterCount = countChars(countableFormValues);
     const total = formCharacterCount + systemPromptChars;
 
-    setEstimatedTokens(Math.round(total / 4));
+    return Math.round(total / 4);
   }
 
   // Calculate estimated tokens on main form change
   useEffect(() => {
     const subscription = watch((formValues) => {
-      calculateEstimatedTokens(formValues as MainFormValues);
+      const tokens = getEstimatedTokens(formValues as MainFormValues);
+      setEstimatedTokens(tokens);
     });
 
     return () => subscription.unsubscribe();
@@ -137,7 +138,8 @@ function MainForm({
 
   // Calculate estimated tokens on prompt data change (settings)
   useEffect(() => {
-    calculateEstimatedTokens(form.getValues());
+    const tokens = getEstimatedTokens(form.getValues());
+    setEstimatedTokens(tokens);
   }, [promptData]); // eslint-disable-line react-hooks/exhaustive-deps
 
   return (
