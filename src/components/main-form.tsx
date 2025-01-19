@@ -29,22 +29,16 @@ import { usePromptDataContext } from "@/contexts/prompt-data-context";
 function MainForm({
   onNavigate,
   onSubmit,
+  isLoading,
+  error,
 }: {
   onNavigate: () => void;
   onSubmit: (data: FormValues) => void;
+  isLoading: boolean;
+  error?: string | null;
 }) {
-  const [coverLetterText, setCoverLetterText] = useState("");
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
   const [estimatedTokens, setEstimatedTokens] = useState(0);
-  const [usageData, setUsageData] = useState({
-    total: 0,
-    prompt: 0,
-    completion: 0,
-  });
-
-  const { promptData, setPromptData, isSettingsValid, setIsSettingsValid } =
-    usePromptDataContext();
+  const { promptData, isSettingsValid } = usePromptDataContext();
 
   const form = useForm<MainFormValues>({
     resolver: zodResolver(mainFormSchema),

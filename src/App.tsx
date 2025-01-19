@@ -96,7 +96,12 @@ function App() {
           }}
         >
           {/* Page One */}
-          <MainForm onNavigate={handleShowSettings} onSubmit={handleSubmit} />
+          <MainForm
+            onNavigate={handleShowSettings}
+            onSubmit={handleSubmit}
+            isLoading={isLoading}
+            error={error}
+          />
 
           {/* Page Two */}
           {page === "result" ? (
