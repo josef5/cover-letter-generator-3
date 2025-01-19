@@ -1,7 +1,6 @@
 import { zodResolver } from "@hookform/resolvers/zod";
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { FormProvider, useForm } from "react-hook-form";
-import CopiableTextarea from "./ui/copiable-textarea";
 import { Button } from "./ui/button";
 import {
   Form,
@@ -21,7 +20,6 @@ import {
   mainFormSchema,
 } from "@/lib/schemas/form-schema";
 import { countChars } from "@/lib/utils";
-import type { UserData } from "@/types/data";
 import { Settings } from "lucide-react";
 import TokenCount from "./ui/token-count";
 import { usePromptDataContext } from "@/contexts/prompt-data-context";
@@ -54,7 +52,6 @@ function MainForm({
 
   const {
     control,
-    // handleSubmit,
     formState: { isValid },
     watch,
   } = form;
@@ -63,48 +60,6 @@ function MainForm({
     const compositeData = { ...data, settings: promptData.settings };
     onSubmit(compositeData);
   }
-
-  /* function onSubmit(data: MainFormValues) {
-    const compositeData = { ...data, settings: promptData.settings };
-    console.log("compositeData :", compositeData);
-
-    fetchCoverLetterText(compositeData);
-  } */
-
-  /* async function fetchCoverLetterText(userData: UserData) {
-    setCoverLetterText("");
-    setError(null);
-    setIsLoading(true);
-
-    try {
-      const data = await import("@/mock-response.json");
-      // const data = await window.api.fetchCompletion(userData);
-
-      if (!data) {
-        throw new Error("API response is empty");
-      }
-
-      const {
-        chatCompletion: {
-          usage: { total_tokens, prompt_tokens, completion_tokens },
-        },
-      } = data;
-
-      setUsageData({
-        total: total_tokens,
-        prompt: prompt_tokens,
-        completion: completion_tokens,
-      });
-
-      setCoverLetterText(data.chatCompletion.choices[0].message.content);
-    } catch (error) {
-      console.error(error);
-
-      setError((error as Error).message);
-    } finally {
-      setIsLoading(false);
-    }
-  } */
 
   function getEstimatedTokens(formValues: MainFormValues) {
     const systemPromptChars = 500; // approx
@@ -209,35 +164,18 @@ function MainForm({
               <Button type="submit" disabled={!isValid || !isSettingsValid}>
                 Generate
               </Button>
-              {!coverLetterText && (
-                <TokenCount>
-                  Estimated token count in prompt: {estimatedTokens}
-                </TokenCount>
-              )}
+              <TokenCount>
+                Estimated token count in prompt: {estimatedTokens}
+              </TokenCount>
             </div>
           </form>
         </Form>
       </FormProvider>
       {error && <div className="text-red-500">{error}</div>}
-      {isLoading ? (
+      {isLoading && (
         <div className="mt-4 flex items-center justify-center">
           <Spinner />
         </div>
-      ) : (
-        coverLetterText && (
-          <>
-            <CopiableTextarea
-              value={coverLetterText}
-              onChange={(event: React.ChangeEvent<HTMLTextAreaElement>) =>
-                setCoverLetterText(event.target?.value)
-              }
-            />
-            <TokenCount>
-              Tokens Used: {usageData.total} (Prompt: {usageData.prompt}
-              /Completion: {usageData.completion})
-            </TokenCount>
-          </>
-        )
       )}
     </div>
   );
