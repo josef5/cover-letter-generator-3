@@ -6,9 +6,11 @@ import { Textarea } from "./textarea";
 function CopiableTextarea({
   value,
   onChange,
+  className,
 }: {
   value: string;
   onChange: (event: React.ChangeEvent<HTMLTextAreaElement>) => void;
+  className?: string;
 }) {
   const [copied, setCopied] = useState(false);
   const [isHovered, setIsHovered] = useState(false);
@@ -35,7 +37,7 @@ function CopiableTextarea({
 
   return (
     <div
-      className="relative flex-1"
+      className={`relative flex-1 ${className}`}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
