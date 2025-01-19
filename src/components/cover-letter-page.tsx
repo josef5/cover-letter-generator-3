@@ -7,9 +7,11 @@ import { Undo2 } from "lucide-react";
 function CoverLetterPage({
   text,
   onNavigate,
+  usageData,
 }: {
   text: string;
   onNavigate: () => void;
+  usageData: { total: number; prompt: number; completion: number };
 }) {
   const [coverLetterText, setCoverLetterText] = useState(text);
 
@@ -24,17 +26,19 @@ function CoverLetterPage({
         <Undo2 />
       </Button>
       <h1 className="text-base font-bold">Cover Letter</h1>
-      <CopiableTextarea
-        value={coverLetterText}
-        className="mt-4"
-        onChange={(event: React.ChangeEvent<HTMLTextAreaElement>) =>
-          setCoverLetterText(event.target?.value)
-        }
-      />
-      {/* <TokenCount>
-        Tokens Used: {usageData.total} (Prompt: {usageData.prompt}
-        /Completion: {usageData.completion})
-      </TokenCount> */}
+      <div className="mt-4 flex h-full flex-col gap-4">
+        <CopiableTextarea
+          value={coverLetterText}
+          className="mt-4 flex-1"
+          onChange={(event: React.ChangeEvent<HTMLTextAreaElement>) =>
+            setCoverLetterText(event.target?.value)
+          }
+        />
+        <TokenCount>
+          Tokens Used: {usageData.total} (Prompt: {usageData.prompt}
+          /Completion: {usageData.completion})
+        </TokenCount>
+      </div>
     </div>
   );
 }

@@ -108,6 +108,7 @@ function App() {
             <CoverLetterPage
               text={coverLetterText}
               onNavigate={handleCloseCoverLetter}
+              usageData={usageData}
             />
           ) : (
             <SettingsForm onNavigate={handleCloseSettings} />
