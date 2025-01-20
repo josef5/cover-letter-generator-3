@@ -2,7 +2,10 @@ import { useState } from "react";
 import CoverLetterPage from "./components/cover-letter-page";
 import MainForm from "./components/main-form";
 import SettingsForm from "./components/settings-form";
-import { PromptDataProvider } from "./contexts/prompt-data-context";
+import {
+  PromptDataProvider,
+  usePromptDataContext,
+} from "./contexts/prompt-data-context";
 import "./index.css";
 import { type FormValues } from "./lib/schemas/form-schema";
 import { OpenAI } from "openai";
@@ -11,7 +14,6 @@ import { ChatResponse } from "./types/chat";
 function AppContent() {
   const [page, setPage] = useState<"main" | "settings" | "result">("main");
   const [slide, setSlide] = useState<"left" | "right">("left");
-  const [coverLetterText, setCoverLetterText] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [usageData, setUsageData] = useState({
@@ -20,12 +22,15 @@ function AppContent() {
     completion: 0,
   });
 
+  const { coverLetterText, setCoverLetterText } = usePromptDataContext();
+
   function handleSubmit(data: FormValues) {
     console.log("data :", data);
 
     fetchCoverLetterText(data);
   }
 
+  // TODO: Consolidate navigation functions
   function handleShowSettings() {
     setPage("settings");
     setSlide("right");
@@ -144,6 +149,7 @@ function AppContent() {
       setCoverLetterText(
         data.chatCompletion.choices[0].message.content as string,
       );
+
       setSlide("right");
       setPage("result");
     } catch (error) {
@@ -175,7 +181,7 @@ function AppContent() {
           {/* Page Two */}
           {page === "result" ? (
             <CoverLetterPage
-              text={coverLetterText}
+              text={coverLetterText as string}
               onNavigate={handleCloseCoverLetter}
               usageData={usageData}
             />
