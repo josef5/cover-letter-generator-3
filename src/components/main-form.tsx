@@ -30,7 +30,7 @@ function MainForm({
   isLoading,
   error,
 }: {
-  onNavigate: (to: string) => void;
+  onNavigate: (to: "settings" | "cover-letter") => void;
   onSubmit: (data: FormValues) => void;
   isLoading: boolean;
   error?: string | null;
@@ -108,7 +108,7 @@ function MainForm({
       >
         <Settings />
       </Button>
-      <h1 className="text-base font-bold">Generate cover letter</h1>
+      <h1 className="text-base font-bold">Generate Cover Letter</h1>
       <FormProvider {...form}>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(handleSubmit)}>
@@ -177,7 +177,7 @@ function MainForm({
                     className="self-end"
                     onClick={(event: React.MouseEvent<HTMLButtonElement>) => {
                       event.preventDefault();
-                      onNavigate("back to cover letter");
+                      onNavigate("cover-letter");
                     }}
                   >
                     <CornerUpRight />

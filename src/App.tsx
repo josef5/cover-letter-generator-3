@@ -12,7 +12,9 @@ import { OpenAI } from "openai";
 import { ChatResponse } from "./types/chat";
 
 function AppContent() {
-  const [page, setPage] = useState<"main" | "settings" | "result">("main");
+  const [page, setPage] = useState<"main" | "settings" | "cover-letter">(
+    "main",
+  );
   const [slide, setSlide] = useState<"left" | "right">("left");
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -25,32 +27,28 @@ function AppContent() {
   const { coverLetterText, setCoverLetterText } = useAppDataContext();
 
   function handleSubmit(data: FormValues) {
-    console.log("data :", data);
+    console.log("Request data :", data);
 
     fetchCoverLetterText(data);
   }
 
-  // TODO: Consolidate navigation functions
-  function handleShowSettings() {
-    setPage("settings");
-    setSlide("right");
-  }
-
-  function handleCloseSettings() {
-    setPage("main");
-    setSlide("left");
-  }
-
-  async function handleCloseCoverLetter() {
-    setSlide("left");
-
-    await sleep(550);
-    setPage("main");
-  }
-
-  function handleNavigateBack() {
-    setSlide("right");
-    setPage("result");
+  async function navigateTo(to: "main" | "settings" | "cover-letter") {
+    switch (to) {
+      case "main":
+        setSlide("left");
+        await sleep(550);
+        setPage("main");
+        break;
+      case "settings":
+        setSlide("right");
+        setPage("settings");
+        break;
+      case "cover-letter":
+        setSlide("right");
+        setPage("cover-letter");
+        break;
+      default:
+    }
   }
 
   const sleep = (ms: number) =>
@@ -137,7 +135,7 @@ function AppContent() {
         throw new Error("API response is empty");
       }
 
-      console.log("data :", data);
+      console.log("Response data :", data);
 
       const {
         chatCompletion: {
@@ -155,8 +153,7 @@ function AppContent() {
         data.chatCompletion.choices[0].message.content as string,
       );
 
-      setSlide("right");
-      setPage("result");
+      navigateTo("cover-letter");
     } catch (error) {
       console.error(error);
 
@@ -177,27 +174,21 @@ function AppContent() {
         >
           {/* Page One */}
           <MainForm
-            onNavigate={(to: string) => {
-              if (to === "settings") {
-                handleShowSettings();
-              } else {
-                handleNavigateBack();
-              }
-            }}
+            onNavigate={navigateTo}
             onSubmit={handleSubmit}
             isLoading={isLoading}
             error={error}
           />
 
           {/* Page Two */}
-          {page === "result" ? (
+          {page === "cover-letter" ? (
             <CoverLetterPage
               text={coverLetterText as string}
-              onNavigate={handleCloseCoverLetter}
+              onNavigate={() => navigateTo("main")}
               usageData={usageData}
             />
           ) : (
-            <SettingsForm onNavigate={handleCloseSettings} />
+            <SettingsForm onNavigate={() => navigateTo("main")} />
           )}
         </div>
       </div>
