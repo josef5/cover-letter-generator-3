@@ -6,6 +6,7 @@ import { PromptDataProvider } from "./contexts/prompt-data-context";
 import "./index.css";
 import { type FormValues } from "./lib/schemas/form-schema";
 import { OpenAI } from "openai";
+import { ChatResponse } from "./types/chat";
 
 function App() {
   const [page, setPage] = useState<"main" | "settings" | "result">("main");
@@ -132,15 +133,7 @@ function App() {
         chatCompletion: {
           usage: { total_tokens, prompt_tokens, completion_tokens },
         },
-      } = data as {
-        chatCompletion: {
-          usage: {
-            total_tokens: number;
-            prompt_tokens: number;
-            completion_tokens: number;
-          };
-        };
-      };
+      } = data as ChatResponse;
 
       setUsageData({
         total: total_tokens,
