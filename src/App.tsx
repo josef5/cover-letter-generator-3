@@ -8,7 +8,7 @@ import { type FormValues } from "./lib/schemas/form-schema";
 import { OpenAI } from "openai";
 import { ChatResponse } from "./types/chat";
 
-function App() {
+function AppContent() {
   const [page, setPage] = useState<"main" | "settings" | "result">("main");
   const [slide, setSlide] = useState<"left" | "right">("left");
   const [coverLetterText, setCoverLetterText] = useState("");
@@ -156,7 +156,7 @@ function App() {
   }
 
   return (
-    <PromptDataProvider>
+    <>
       <div className="h-screen w-screen overflow-hidden">
         <div
           className={`flex h-full transition-transform duration-500 ease-in-out`}
@@ -184,6 +184,14 @@ function App() {
           )}
         </div>
       </div>
+    </>
+  );
+}
+
+function App() {
+  return (
+    <PromptDataProvider>
+      <AppContent />
     </PromptDataProvider>
   );
 }
