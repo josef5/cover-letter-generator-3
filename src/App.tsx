@@ -48,6 +48,11 @@ function AppContent() {
     setPage("main");
   }
 
+  function handleNavigateBack() {
+    setSlide("right");
+    setPage("result");
+  }
+
   const sleep = (ms: number) =>
     new Promise((resolve) => setTimeout(resolve, ms));
 
@@ -172,7 +177,13 @@ function AppContent() {
         >
           {/* Page One */}
           <MainForm
-            onNavigate={handleShowSettings}
+            onNavigate={(to: string) => {
+              if (to === "settings") {
+                handleShowSettings();
+              } else {
+                handleNavigateBack();
+              }
+            }}
             onSubmit={handleSubmit}
             isLoading={isLoading}
             error={error}

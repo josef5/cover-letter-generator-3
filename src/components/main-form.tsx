@@ -20,7 +20,7 @@ import {
   mainFormSchema,
 } from "@/lib/schemas/form-schema";
 import { countChars } from "@/lib/utils";
-import { Settings } from "lucide-react";
+import { Settings, CornerUpRight } from "lucide-react";
 import TokenCount from "./ui/token-count";
 import { usePromptDataContext } from "@/contexts/prompt-data-context";
 
@@ -30,13 +30,14 @@ function MainForm({
   isLoading,
   error,
 }: {
-  onNavigate: () => void;
+  onNavigate: (to: string) => void;
   onSubmit: (data: FormValues) => void;
   isLoading: boolean;
   error?: string | null;
 }) {
   const [estimatedTokens, setEstimatedTokens] = useState(0);
-  const { promptData, isSettingsValid } = usePromptDataContext();
+  const { promptData, isSettingsValid, coverLetterText } =
+    usePromptDataContext();
 
   const form = useForm<MainFormValues>({
     resolver: zodResolver(mainFormSchema),
@@ -61,6 +62,7 @@ function MainForm({
     onSubmit(compositeData);
   }
 
+  // TODO: Move to utils
   function getEstimatedTokens(formValues: MainFormValues) {
     const systemPromptChars = 500; // approx
 
@@ -103,7 +105,7 @@ function MainForm({
         variant="ghost"
         size="icon"
         className={`absolute right-4 top-4 ${!isSettingsValid ? "text-red-500" : ""}`}
-        onClick={onNavigate}
+        onClick={() => onNavigate("settings")}
       >
         <Settings />
       </Button>
@@ -161,9 +163,28 @@ function MainForm({
                   </FormItem>
                 )}
               />
-              <Button type="submit" disabled={!isValid || !isSettingsValid}>
-                Generate
-              </Button>
+              <div className="flex gap-2">
+                <Button
+                  type="submit"
+                  disabled={!isValid || !isSettingsValid}
+                  className="flex-1"
+                >
+                  Generate
+                </Button>
+                {coverLetterText && (
+                  <Button
+                    variant="outline"
+                    size="icon"
+                    className="self-end"
+                    onClick={(event: React.MouseEvent<HTMLButtonElement>) => {
+                      event.preventDefault();
+                      onNavigate("back to cover letter");
+                    }}
+                  >
+                    <CornerUpRight />
+                  </Button>
+                )}
+              </div>
               <TokenCount>
                 Estimated token count in prompt: {estimatedTokens}
               </TokenCount>
