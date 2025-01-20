@@ -6,13 +6,15 @@ export type PromptDataContextValue = {
   setPromptData: (data: FormValues) => void;
   isSettingsValid: boolean;
   setIsSettingsValid: (value: boolean) => void;
+  coverLetterText?: string;
+  setCoverLetterText: (text: string) => void;
 };
 
 export const PromptDataContext = createContext<PromptDataContextValue>(
   {} as PromptDataContextValue,
 );
 
-// TODO: Convert to just Settings Data
+// TODO: Convert to AppContext including cover letter text
 
 export function PromptDataProvider({ children }: { children: ReactNode }) {
   // TODO: Consolidate this with the main form
@@ -30,15 +32,16 @@ export function PromptDataProvider({ children }: { children: ReactNode }) {
     },
   });
 
-  // setPromptData((prev) => ({...prev}));
-
   const [isSettingsValid, setIsSettingsValid] = useState<boolean>(false);
+  const [coverLetterText, setCoverLetterText] = useState("");
 
   const value = {
     promptData,
     setPromptData,
     isSettingsValid,
     setIsSettingsValid,
+    coverLetterText,
+    setCoverLetterText,
   };
 
   return (
