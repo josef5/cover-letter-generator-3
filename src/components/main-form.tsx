@@ -22,7 +22,7 @@ import {
 import { countChars } from "@/lib/utils";
 import { Settings, CornerUpRight } from "lucide-react";
 import TokenCount from "./ui/token-count";
-import { usePromptDataContext } from "@/contexts/prompt-data-context";
+import { useAppDataContext } from "@/contexts/app-data-context";
 
 function MainForm({
   onNavigate,
@@ -36,8 +36,7 @@ function MainForm({
   error?: string | null;
 }) {
   const [estimatedTokens, setEstimatedTokens] = useState(0);
-  const { promptData, isSettingsValid, coverLetterText } =
-    usePromptDataContext();
+  const { appData, isSettingsValid, coverLetterText } = useAppDataContext();
 
   const form = useForm<MainFormValues>({
     resolver: zodResolver(mainFormSchema),
@@ -58,7 +57,7 @@ function MainForm({
   } = form;
 
   function handleSubmit(data: MainFormValues) {
-    const compositeData = { ...data, settings: promptData.settings };
+    const compositeData = { ...data, settings: appData.settings };
     onSubmit(compositeData);
   }
 
@@ -70,7 +69,7 @@ function MainForm({
       name = "",
       workExperience = "",
       wordLimit = 300,
-    } = promptData.settings;
+    } = appData.settings;
 
     const countableFormValues = {
       ...formValues,
@@ -91,13 +90,13 @@ function MainForm({
     });
 
     return () => subscription.unsubscribe();
-  }, [watch, promptData.settings]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [watch, appData.settings]); // eslint-disable-line react-hooks/exhaustive-deps
 
   // Calculate estimated tokens on prompt data change (settings)
   useEffect(() => {
     const tokens = getEstimatedTokens(form.getValues());
     setEstimatedTokens(tokens);
-  }, [promptData]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [appData]); // eslint-disable-line react-hooks/exhaustive-deps
 
   return (
     <div className="relative flex h-full min-w-full flex-col p-8 text-left">

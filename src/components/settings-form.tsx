@@ -19,7 +19,7 @@ import { FormProvider, useForm } from "react-hook-form";
 import { Button } from "./ui/button";
 import { Input } from "./ui/input";
 import { Textarea } from "./ui/textarea";
-import { usePromptDataContext } from "@/contexts/prompt-data-context";
+import { useAppDataContext } from "@/contexts/app-data-context";
 import { useEffect } from "react";
 
 function SettingsForm({ onNavigate }: { onNavigate: () => void }) {
@@ -53,11 +53,10 @@ function SettingsForm({ onNavigate }: { onNavigate: () => void }) {
     formState: { isValid },
   } = form;
 
-  const { promptData, setPromptData, setIsSettingsValid } =
-    usePromptDataContext();
+  const { appData, setAppData, setIsSettingsValid } = useAppDataContext();
 
   function handleSubmit(data: SettingsValues) {
-    setPromptData({ ...promptData, settings: data });
+    setAppData({ ...appData, settings: data });
     setIsSettingsValid(true);
     localStorage.setItem("settings", JSON.stringify(data));
 
@@ -71,7 +70,7 @@ function SettingsForm({ onNavigate }: { onNavigate: () => void }) {
 
   useEffect(() => {
     if (isValid) {
-      setPromptData({ ...promptData, settings: form.getValues() });
+      setAppData({ ...appData, settings: form.getValues() });
     }
   }, [isValid]); // eslint-disable-line react-hooks/exhaustive-deps
 

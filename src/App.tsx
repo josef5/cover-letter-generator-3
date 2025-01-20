@@ -3,9 +3,9 @@ import CoverLetterPage from "./components/cover-letter-page";
 import MainForm from "./components/main-form";
 import SettingsForm from "./components/settings-form";
 import {
-  PromptDataProvider,
-  usePromptDataContext,
-} from "./contexts/prompt-data-context";
+  AppDataProvider,
+  useAppDataContext,
+} from "./contexts/app-data-context";
 import "./index.css";
 import { type FormValues } from "./lib/schemas/form-schema";
 import { OpenAI } from "openai";
@@ -22,7 +22,7 @@ function AppContent() {
     completion: 0,
   });
 
-  const { coverLetterText, setCoverLetterText } = usePromptDataContext();
+  const { coverLetterText, setCoverLetterText } = useAppDataContext();
 
   function handleSubmit(data: FormValues) {
     console.log("data :", data);
@@ -207,9 +207,9 @@ function AppContent() {
 
 function App() {
   return (
-    <PromptDataProvider>
+    <AppDataProvider>
       <AppContent />
-    </PromptDataProvider>
+    </AppDataProvider>
   );
 }
 
