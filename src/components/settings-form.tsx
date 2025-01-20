@@ -12,14 +12,10 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import {
-  FormValues,
-  type SettingsValues,
-  settingsSchema,
-} from "@/lib/schemas/form-schema";
+import { type SettingsValues, settingsSchema } from "@/lib/schemas/form-schema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { X } from "lucide-react";
-import { FormProvider, set, useForm } from "react-hook-form";
+import { FormProvider, useForm } from "react-hook-form";
 import { Button } from "./ui/button";
 import { Input } from "./ui/input";
 import { Textarea } from "./ui/textarea";
@@ -54,8 +50,7 @@ function SettingsForm({ onNavigate }: { onNavigate: () => void }) {
   const {
     control,
     // handleSubmit,
-    formState: { isValid, errors },
-    watch,
+    formState: { isValid },
   } = form;
 
   const { promptData, setPromptData, setIsSettingsValid } =
