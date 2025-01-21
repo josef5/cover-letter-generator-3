@@ -1,4 +1,13 @@
+import { useAppDataContext } from "@/contexts/app-data-context";
+import "@/index.css";
+import {
+  type FormValues,
+  type MainFormValues,
+  mainFormSchema,
+} from "@/lib/schemas/form-schema";
+import { getEstimatedTokens } from "@/lib/utils";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { CornerUpRight, Settings } from "lucide-react";
 import { useEffect, useState } from "react";
 import { FormProvider, useForm } from "react-hook-form";
 import { Button } from "./ui/button";
@@ -13,16 +22,7 @@ import {
 import { Input } from "./ui/input";
 import Spinner from "./ui/spinner";
 import { Textarea } from "./ui/textarea";
-import "@/index.css";
-import {
-  type FormValues,
-  type MainFormValues,
-  mainFormSchema,
-} from "@/lib/schemas/form-schema";
-import { countChars } from "@/lib/utils";
-import { Settings, CornerUpRight } from "lucide-react";
 import TokenCount from "./ui/token-count";
-import { useAppDataContext } from "@/contexts/app-data-context";
 
 function MainForm({
   onNavigate,
@@ -61,31 +61,15 @@ function MainForm({
     onSubmit(compositeData);
   }
 
-  // TODO: Move to utils
-  function getEstimatedTokens(formValues: MainFormValues) {
-    const systemPromptChars = 500; // approx
-
-    const {
-      name = "",
-      workExperience = "",
-      wordLimit = 300,
-    } = appData.settings;
-
-    const countableFormValues = {
-      ...formValues,
-      settings: { name, workExperience, wordLimit },
-    };
-
-    const formCharacterCount = countChars(countableFormValues);
-    const total = formCharacterCount + systemPromptChars;
-
-    return Math.round(total / 4);
-  }
-
   // Calculate estimated tokens on main form change
   useEffect(() => {
     const subscription = watch((formValues) => {
-      const tokens = getEstimatedTokens(formValues as MainFormValues);
+      const consolidatedValues = {
+        ...formValues,
+        settings: appData.settings,
+      } as FormValues;
+      const tokens = getEstimatedTokens(consolidatedValues);
+
       setEstimatedTokens(tokens);
     });
 
@@ -94,7 +78,12 @@ function MainForm({
 
   // Calculate estimated tokens on prompt data change (settings)
   useEffect(() => {
-    const tokens = getEstimatedTokens(form.getValues());
+    const consolidatedValues = {
+      ...form.getValues(),
+      settings: appData.settings,
+    } as FormValues;
+    const tokens = getEstimatedTokens(consolidatedValues);
+
     setEstimatedTokens(tokens);
   }, [appData]); // eslint-disable-line react-hooks/exhaustive-deps
 

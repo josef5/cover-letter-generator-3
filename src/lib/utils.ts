@@ -1,5 +1,6 @@
 import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
+import { FormValues } from "@/lib/schemas/form-schema";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -25,4 +26,23 @@ export function countChars(value: JsonValue): number {
     default:
       return 0;
   }
+}
+
+export function getEstimatedTokens(formValues: FormValues) {
+  const systemPromptChars = 500; // approx
+
+  // Extract values from settings that count towards the token limit
+  const {
+    settings: { name = "", workExperience = "", wordLimit = 300 },
+  } = formValues;
+
+  const countableFormValues = {
+    ...formValues,
+    settings: { name, workExperience, wordLimit },
+  };
+
+  const formCharacterCount = countChars(countableFormValues);
+  const total = formCharacterCount + systemPromptChars;
+
+  return Math.round(total / 4);
 }
