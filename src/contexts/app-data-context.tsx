@@ -14,22 +14,22 @@ export const AppDataContext = createContext<AppDataContextValue>(
   {} as AppDataContextValue,
 );
 
-export function AppDataProvider({ children }: { children: ReactNode }) {
-  // TODO: Consolidate this with the main form
-  const [appData, setAppData] = useState<FormValues>({
-    salutation: "Dear Hiring Manager,",
-    jobDescription: "",
-    additionalNotes: "",
-    settings: {
-      apiKey: "",
-      name: "",
-      model: "gpt-3.5-turbo",
-      temperature: 0.7,
-      wordLimit: 300,
-      workExperience: "",
-    },
-  });
+export const defaultValues: FormValues = {
+  salutation: "Dear Hiring Manager,",
+  jobDescription: "",
+  additionalNotes: "",
+  settings: {
+    apiKey: "",
+    name: "",
+    model: "gpt-3.5-turbo",
+    temperature: 0.7,
+    wordLimit: 300,
+    workExperience: "",
+  },
+} as const;
 
+export function AppDataProvider({ children }: { children: ReactNode }) {
+  const [appData, setAppData] = useState<FormValues>(defaultValues);
   const [isSettingsValid, setIsSettingsValid] = useState<boolean>(false);
   const [coverLetterText, setCoverLetterText] = useState("");
 

@@ -23,6 +23,7 @@ import { Input } from "./ui/input";
 import Spinner from "./ui/spinner";
 import { Textarea } from "./ui/textarea";
 import TokenCount from "./ui/token-count";
+import { defaultValues } from "@/contexts/app-data-context";
 
 function MainForm({
   onNavigate,
@@ -41,13 +42,7 @@ function MainForm({
   const form = useForm<MainFormValues>({
     resolver: zodResolver(mainFormSchema),
     mode: "onChange",
-    defaultValues: {
-      salutation: "Dear Hiring Manager,",
-      // jobDescription: "",
-      jobDescription:
-        "We are Awesome Co. and we are looking for a Software Engineer to join our team. You will be working on our core product, which is a platform that helps people write better cover letters. You will be responsible for building new features, fixing bugs, and improving the performance of our platform. The ideal candidate is passionate about writing clean code, has experience with React and Node.js, and is a great team player. If you are interested in this position, please send us your resume and a cover letter explaining why you are a good fit for this role.",
-      additionalNotes: "",
-    },
+    defaultValues,
   });
 
   const {
