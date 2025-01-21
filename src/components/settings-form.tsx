@@ -21,6 +21,7 @@ import { Input } from "./ui/input";
 import { Textarea } from "./ui/textarea";
 import { useAppDataContext } from "@/contexts/app-data-context";
 import { useEffect } from "react";
+import { defaultValues } from "@/contexts/app-data-context";
 
 function SettingsForm({ onNavigate }: { onNavigate: () => void }) {
   const models = settingsSchema.shape.model._def.values;
@@ -28,14 +29,7 @@ function SettingsForm({ onNavigate }: { onNavigate: () => void }) {
   const form = useForm<SettingsValues>({
     resolver: zodResolver(settingsSchema),
     mode: "onChange",
-    defaultValues: {
-      apiKey: "",
-      name: "",
-      model: "gpt-3.5-turbo",
-      temperature: 0.7,
-      wordLimit: 300,
-      workExperience: "",
-    },
+    defaultValues: defaultValues.settings,
     /* {
         apiKey: "abc123",
         name: "Jose Espejo",
@@ -49,7 +43,6 @@ function SettingsForm({ onNavigate }: { onNavigate: () => void }) {
 
   const {
     control,
-    // handleSubmit,
     formState: { isValid },
   } = form;
 

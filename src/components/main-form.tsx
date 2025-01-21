@@ -69,7 +69,7 @@ function MainForm({
     });
 
     return () => subscription.unsubscribe();
-  }, [watch, appData.settings]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [watch, appData.settings]);
 
   // Calculate estimated tokens on prompt data change (settings)
   useEffect(() => {

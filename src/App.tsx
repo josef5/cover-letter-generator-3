@@ -1,15 +1,16 @@
-import { useState } from "react";
+import { ReactNode, useState } from "react";
 import CoverLetterPage from "./components/cover-letter-page";
 import MainForm from "./components/main-form";
 import SettingsForm from "./components/settings-form";
 import {
-  AppDataProvider,
+  // AppDataProvider,
   useAppDataContext,
 } from "./contexts/app-data-context";
 import "./index.css";
 import { type FormValues } from "./lib/schemas/form-schema";
 import { OpenAI } from "openai";
 import { ChatResponse } from "./types/chat";
+import { AppDataContext, defaultValues } from "./contexts/app-data-context";
 
 function AppContent() {
   const [page, setPage] = useState<"main" | "settings" | "cover-letter">(
@@ -193,6 +194,25 @@ function AppContent() {
         </div>
       </div>
     </>
+  );
+}
+
+function AppDataProvider({ children }: { children: ReactNode }) {
+  const [appData, setAppData] = useState<FormValues>(defaultValues);
+  const [isSettingsValid, setIsSettingsValid] = useState<boolean>(false);
+  const [coverLetterText, setCoverLetterText] = useState("");
+
+  const value = {
+    appData,
+    setAppData,
+    isSettingsValid,
+    setIsSettingsValid,
+    coverLetterText,
+    setCoverLetterText,
+  };
+
+  return (
+    <AppDataContext.Provider value={value}>{children}</AppDataContext.Provider>
   );
 }
 
