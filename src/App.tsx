@@ -58,7 +58,7 @@ function AppContent() {
   const sleep = (ms: number) =>
     new Promise((resolve) => setTimeout(resolve, ms));
 
-  async function fetchCoverLetterText(userData: FormValues) {
+  async function fetchCoverLetterText(fromValues: FormValues) {
     setCoverLetterText("");
     setError(null);
     setIsLoading(true);
@@ -83,7 +83,7 @@ function AppContent() {
           workExperience,
           portfolioSite,
         },
-      } = userData;
+      } = fromValues;
 
       const prompt = `Here is a job description, write a cover letter for this job on behalf of the user: ${jobDescription}.`;
 
