@@ -27,6 +27,7 @@ export const defaultValues: FormValues = {
     temperature: 0.7,
     wordLimit: 300,
     workExperience: "",
+    portfolioSite: "",
   },
 } as const;
 

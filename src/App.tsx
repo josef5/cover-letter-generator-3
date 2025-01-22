@@ -78,6 +78,7 @@ function AppContent() {
           temperature,
           wordLimit,
           workExperience,
+          portfolioSite,
         },
       } = userData;
 
@@ -112,7 +113,10 @@ function AppContent() {
             },
             {
               role: "system",
-              content: `Sign off with the users name ${name}`,
+              content: portfolioSite
+                ? `Include a paragraph with one sentence like: A selection of my work can be viewed at ${portfolioSite}`
+                : "",
+            },
             },
             {
               role: "system",

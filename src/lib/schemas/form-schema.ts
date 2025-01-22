@@ -33,6 +33,7 @@ export const settingsSchema = z.object({
     .number({ required_error: "Required" })
     .min(100, { message: "Enter a value of 100 or more" }),
   workExperience: z.string().min(1, { message: "Required" }),
+  portfolioSite: z.union([z.string().url(), z.literal("")]).optional(),
 });
 
 export type SettingsValues = z.infer<typeof settingsSchema>;

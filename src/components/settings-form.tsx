@@ -37,7 +37,7 @@ function SettingsForm({ onNavigate }: { onNavigate: () => void }) {
         temperature: 0.7,
         wordLimit: 300,
         workExperience:
-          "I am a frontend developer with 4 years of experience in React, Vue and TypeScript. In my last job I worked at a leading marketing agency; Tribal Worldwide, where our main client was Volkswagen and its subsidies Skoda and SEAT. I was a part of a team that developed and maintained a series of web apps in React and Typescript. A selection of my work can be viewed at https://joseespejo.info",
+          "I am a frontend developer with 4 years of experience in React, Vue and TypeScript. In my last job I worked at a leading marketing agency; Tribal Worldwide, where our main client was Volkswagen and its subsidies Skoda and SEAT. I was a part of a team that developed and maintained a series of web apps in React and Typescript.",
       }, */
   });
 
@@ -239,6 +239,26 @@ function SettingsForm({ onNavigate }: { onNavigate: () => void }) {
                   )}
                 />
               </div>
+              <FormField
+                control={control}
+                name="portfolioSite"
+                render={({ field, formState: { errors } }) => (
+                  <FormItem className="flex flex-col gap-1">
+                    <FormLabel className="flex text-xs">
+                      Portfolio Site (Optional){" "}
+                      {errors?.portfolioSite?.message &&
+                        `. ${errors?.portfolioSite?.message}`}
+                    </FormLabel>
+                    <FormControl>
+                      <Input
+                        placeholder="Enter a url"
+                        {...field}
+                        className="w-full autofill:shadow-[inset_0_0_0px_1000px_hsl(var(--background))]"
+                      />
+                    </FormControl>
+                  </FormItem>
+                )}
+              />
               {/*  TODO: Add skillset? */}
               {/* TODO: Add additional settings - e.g. British English */}
               <Button type="submit" disabled={!isValid}>
