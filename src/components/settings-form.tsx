@@ -67,6 +67,7 @@ function SettingsForm({ onNavigate }: { onNavigate: () => void }) {
     }
   }, [isValid]); // eslint-disable-line react-hooks/exhaustive-deps
 
+  // Update form data on mount, with localStorage
   useEffect(() => {
     const storedData = localStorage.getItem("settings");
 
@@ -146,6 +147,7 @@ function SettingsForm({ onNavigate }: { onNavigate: () => void }) {
                       <FormControl>
                         <Select
                           onValueChange={field.onChange}
+                          value={field.value}
                           defaultValue={field.value}
                         >
                           <SelectTrigger
