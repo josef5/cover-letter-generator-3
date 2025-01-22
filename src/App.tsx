@@ -40,14 +40,17 @@ function AppContent() {
         await sleep(550);
         setPage("main");
         break;
+
       case "settings":
         setSlide("right");
         setPage("settings");
         break;
+
       case "cover-letter":
         setSlide("right");
         setPage("cover-letter");
         break;
+
       default:
     }
   }
@@ -91,21 +94,19 @@ function AppContent() {
           messages: [
             {
               role: "system",
-              content:
-                "You are an expert in recruitment and job applications. Write a cover letter for this job.",
-            },
-            {
-              role: "system",
-              content: `Use the users work experience to explain why they are a good fit for the job: ${workExperience}`,
-            },
-            {
-              role: "system",
-              content:
-                "Although we call it a letter it will be sent digitally, so we dont need subject line or an address or date.",
+              content: `You are an expert in recruitment and job applications. Write a cover letter for this job no more than ${wordLimit} words long. Explain why the user is a good fit for the job.`,
             },
             {
               role: "system",
               content: "Do not start with a subject line",
+            },
+            {
+              role: "system",
+              content: `Only mention skills included in the users work experience. Do not improvise mention of other skills if the user has not specified them.`,
+            },
+            {
+              role: "system",
+              content: `Use the users work experience to explain why they are a good fit for the job: ${workExperience}`,
             },
             {
               role: "system",
@@ -117,12 +118,14 @@ function AppContent() {
                 ? `Include a paragraph with one sentence like: A selection of my work can be viewed at ${portfolioSite}`
                 : "",
             },
+            {
+              role: "user",
+              content: additionalNotes ?? "",
             },
             {
               role: "system",
-              content: `The cover letter should be no more than ${wordLimit} words long and should explain why you are a good fit for the job.`,
+              content: `Sign off with the users name ${name}`,
             },
-            { role: "system", content: additionalNotes ?? "" },
             { role: "user", content: prompt },
           ],
           temperature,
