@@ -24,6 +24,13 @@ import Spinner from "./ui/spinner";
 import { Textarea } from "./ui/textarea";
 import TokenCount from "./ui/token-count";
 import { defaultValues } from "@/contexts/app-data-context";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "./ui/select";
 
 function MainForm({
   onNavigate,
@@ -38,6 +45,7 @@ function MainForm({
 }) {
   const [estimatedTokens, setEstimatedTokens] = useState(0);
   const { appData, isSettingsValid, coverLetterText } = useAppDataContext();
+  const models = mainFormSchema.shape.model._def.values;
 
   const form = useForm<MainFormValues>({
     resolver: zodResolver(mainFormSchema),
@@ -131,6 +139,95 @@ function MainForm({
                   </FormItem>
                 )}
               />
+              <div className="row-of-inputs flex justify-between gap-4">
+                <FormField
+                  control={control}
+                  name="model"
+                  render={({ field, formState: { errors } }) => (
+                    <FormItem className="flex flex-1 flex-col gap-1">
+                      <FormLabel className="flex text-xs">
+                        Model
+                        {errors?.model?.message &&
+                          `. ${errors?.model?.message}`}
+                      </FormLabel>
+                      <FormControl>
+                        <Select
+                          onValueChange={field.onChange}
+                          value={field.value}
+                          defaultValue={field.value}
+                        >
+                          <SelectTrigger
+                            className="w-full"
+                            data-testid="settings-model-select-trigger"
+                          >
+                            <SelectValue placeholder="Model" />
+                          </SelectTrigger>
+                          <SelectContent className="w-full">
+                            {models.map((model) => (
+                              <SelectItem key={model} value={model}>
+                                {model}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                      </FormControl>
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={control}
+                  name="temperature"
+                  render={({ field, formState: { errors } }) => (
+                    <FormItem className="flex flex-1 flex-col gap-1">
+                      <FormLabel className="text-xs">
+                        Temperature
+                        {errors?.temperature?.message &&
+                          `. ${errors?.temperature?.message}`}
+                      </FormLabel>
+                      <FormControl>
+                        <Input
+                          type="number"
+                          step={0.1}
+                          placeholder="0.7"
+                          min={0.0}
+                          max={2.0}
+                          {...field}
+                          onChange={(event) =>
+                            field.onChange(Number(event.target.value))
+                          }
+                          className="w-full autofill:shadow-[inset_0_0_0px_1000px_hsl(var(--background))]"
+                        />
+                      </FormControl>
+                    </FormItem>
+                  )}
+                />
+
+                <FormField
+                  control={control}
+                  name="wordLimit"
+                  render={({ field, formState: { errors } }) => (
+                    <FormItem className="flex flex-1 flex-col gap-1">
+                      <FormLabel className="flex text-xs">
+                        Word Limit
+                        {errors?.wordLimit?.message &&
+                          `. ${errors?.wordLimit?.message}`}
+                      </FormLabel>
+                      <FormControl>
+                        <Input
+                          type="number"
+                          placeholder="200"
+                          step="100"
+                          {...field}
+                          onChange={(event) =>
+                            field.onChange(Number(event.target.value))
+                          }
+                          className="w-full autofill:shadow-[inset_0_0_0px_1000px_hsl(var(--background))]"
+                        />
+                      </FormControl>
+                    </FormItem>
+                  )}
+                />
+              </div>
               <FormField
                 control={control}
                 name="additionalNotes"

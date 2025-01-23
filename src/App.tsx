@@ -2,10 +2,7 @@ import { ReactNode, useState } from "react";
 import CoverLetterPage from "./components/cover-letter-page";
 import MainForm from "./components/main-form";
 import SettingsForm from "./components/settings-form";
-import {
-  // AppDataProvider,
-  useAppDataContext,
-} from "./contexts/app-data-context";
+import { useAppDataContext } from "./contexts/app-data-context";
 import "./index.css";
 import { type FormValues } from "./lib/schemas/form-schema";
 import { OpenAI } from "openai";
@@ -73,16 +70,11 @@ function AppContent() {
       const {
         salutation,
         jobDescription,
+        model,
+        temperature,
+        wordLimit,
         additionalNotes,
-        settings: {
-          apiKey,
-          name,
-          model,
-          temperature,
-          wordLimit,
-          workExperience,
-          portfolioSite,
-        },
+        settings: { apiKey, name, workExperience, portfolioSite },
       } = fromValues;
 
       const prompt = `Here is a job description, write a cover letter for this job on behalf of the user: ${jobDescription}.`;
