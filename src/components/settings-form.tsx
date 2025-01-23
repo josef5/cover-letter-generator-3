@@ -71,7 +71,7 @@ function SettingsForm({ onNavigate }: { onNavigate: () => void }) {
   }, [form]);
 
   return (
-    <div className="relative flex h-full min-w-full flex-col p-8 text-left">
+    <div className="relative flex h-full min-w-full flex-col bg-[hsl(var(--settings-background))] p-8 text-left">
       <Button
         variant="ghost"
         size="icon"
@@ -99,7 +99,7 @@ function SettingsForm({ onNavigate }: { onNavigate: () => void }) {
                       <Input
                         placeholder="Enter your API key"
                         {...field}
-                        className="w-full autofill:shadow-[inset_0_0_0px_1000px_hsl(var(--background))]"
+                        className="w-full bg-[hsl(var(--settings-background))] autofill:shadow-[inset_0_0_0px_1000px_hsl(var(--settings-background))]"
                       />
                     </FormControl>
                   </FormItem>
@@ -119,7 +119,7 @@ function SettingsForm({ onNavigate }: { onNavigate: () => void }) {
                         <Input
                           placeholder="e.g. John Smith"
                           {...field}
-                          className="w-full autofill:shadow-[inset_0_0_0px_1000px_hsl(var(--background))]"
+                          className="w-full bg-[hsl(var(--settings-background))] autofill:shadow-[inset_0_0_0px_1000px_hsl(var(--settings-background))]"
                         />
                       </FormControl>
                     </FormItem>
@@ -138,7 +138,11 @@ function SettingsForm({ onNavigate }: { onNavigate: () => void }) {
                           `. ${errors?.workExperience?.message}`}
                       </FormLabel>
                       <FormControl>
-                        <Textarea {...field} rows={10} />
+                        <Textarea
+                          {...field}
+                          rows={10}
+                          className="bg-[hsl(var(--settings-background))]"
+                        />
                       </FormControl>
                     </FormItem>
                   )}
@@ -158,7 +162,7 @@ function SettingsForm({ onNavigate }: { onNavigate: () => void }) {
                       <Input
                         placeholder="Enter a url"
                         {...field}
-                        className="w-full autofill:shadow-[inset_0_0_0px_1000px_hsl(var(--background))]"
+                        className="w-full bg-[hsl(var(--settings-background))] autofill:shadow-[inset_0_0_0px_1000px_hsl(var(--settings-background))]"
                       />
                     </FormControl>
                   </FormItem>
