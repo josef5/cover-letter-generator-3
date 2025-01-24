@@ -184,8 +184,7 @@ function AppContent() {
 
   return (
     <>
-      {/* TODO: Set max width */}
-      <div className="h-screen w-screen overflow-hidden">
+      <div className="mx-auto h-screen w-screen max-w-5xl overflow-hidden">
         <div
           className={`flex h-full transition-transform duration-500 ease-in-out`}
           style={{
