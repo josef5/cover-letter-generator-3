@@ -55,6 +55,7 @@ function AppContent() {
   const sleep = (ms: number) =>
     new Promise((resolve) => setTimeout(resolve, ms));
 
+  // TODO: Decompose fetch
   // TODO: Use TanStack Query
   async function fetchCoverLetterText(fromValues: FormValues) {
     setCoverLetterText("");
@@ -64,7 +65,7 @@ function AppContent() {
     let data = null;
 
     try {
-      //*
+      /*
       const data = await import("./mock-response.json");
       await sleep(1000);
       /*/
@@ -80,6 +81,7 @@ function AppContent() {
           name,
           workExperience,
           portfolioSite,
+          skillSet,
           additionalSettings,
         },
       } = fromValues;
@@ -115,6 +117,12 @@ function AppContent() {
               role: "system",
               content: portfolioSite
                 ? `Include a paragraph with one sentence like: A selection of my work can be viewed at ${portfolioSite}`
+                : "",
+            },
+            {
+              role: "system",
+              content: skillSet
+                ? `The user has the following skills: ${skillSet}`
                 : "",
             },
             {

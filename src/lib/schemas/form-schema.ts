@@ -21,6 +21,7 @@ export const settingsSchema = z.object({
   name: z.string().min(1, { message: "Required" }),
   workExperience: z.string().min(1, { message: "Required" }),
   portfolioSite: z.union([z.string().url(), z.literal("")]).optional(),
+  skillSet: z.string().optional(),
   additionalSettings: z.string().optional(),
 });
 

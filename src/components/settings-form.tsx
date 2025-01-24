@@ -30,6 +30,10 @@ function SettingsForm({ onNavigate }: { onNavigate: () => void }) {
           My background in Design gives me an exceptional eye for detail and an affinity for high quality user experience, and I am adept at leveraging agile methodologies to deliver high-quality digital solutions.
 
           I possess comprehensive knowledge spanning the entire stack, both front-end and back-end development.",
+          portfolioSite: "https://joseespejo.com",
+          skillSet: "Professional experience: React, Vue, TypeScript, JavaScript, CSS, Redux, Styled Components, Storybook, Microservices, jQuery, Agile, Jira.
+          Proficient: Next.js, Tailwind, Cypress, Figma, Vitest, React Native, Swift/UI, Express.js, MongoDB, Firebase.
+          Familiar: Angular, Jest, Playwright, Nuxt, Pinia",
       }, */
   });
 
@@ -169,7 +173,25 @@ function SettingsForm({ onNavigate }: { onNavigate: () => void }) {
                   </FormItem>
                 )}
               />
-              {/* TODO: Add skillset? */}
+              <FormField
+                control={control}
+                name="skillSet"
+                render={({ field }) => (
+                  <FormItem className="flex flex-col gap-1">
+                    <FormLabel className="flex text-xs">
+                      Skill Set (Optional)
+                      <FormMessage className="text-xs" />
+                    </FormLabel>
+                    <FormControl>
+                      <Textarea
+                        {...field}
+                        className="bg-[hsl(var(--settings-background))]"
+                        rows={5}
+                      />
+                    </FormControl>
+                  </FormItem>
+                )}
+              />
               <FormField
                 control={control}
                 name="additionalSettings"
