@@ -55,6 +55,7 @@ function AppContent() {
   const sleep = (ms: number) =>
     new Promise((resolve) => setTimeout(resolve, ms));
 
+  // TODO: Use TanStack Query
   async function fetchCoverLetterText(fromValues: FormValues) {
     setCoverLetterText("");
     setError(null);
@@ -63,7 +64,7 @@ function AppContent() {
     let data = null;
 
     try {
-      /*
+      //*
       const data = await import("./mock-response.json");
       await sleep(1000);
       /*/
@@ -74,7 +75,13 @@ function AppContent() {
         temperature,
         wordLimit,
         additionalNotes,
-        settings: { apiKey, name, workExperience, portfolioSite },
+        settings: {
+          apiKey,
+          name,
+          workExperience,
+          portfolioSite,
+          additionalSettings,
+        },
       } = fromValues;
 
       const prompt = `Here is a job description, write a cover letter for this job on behalf of the user: ${jobDescription}.`;
@@ -109,6 +116,10 @@ function AppContent() {
               content: portfolioSite
                 ? `Include a paragraph with one sentence like: A selection of my work can be viewed at ${portfolioSite}`
                 : "",
+            },
+            {
+              role: "user",
+              content: additionalSettings ?? "",
             },
             {
               role: "user",
@@ -165,6 +176,7 @@ function AppContent() {
 
   return (
     <>
+      {/* TODO: Set max width */}
       <div className="h-screen w-screen overflow-hidden">
         <div
           className={`flex h-full transition-transform duration-500 ease-in-out`}

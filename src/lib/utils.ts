@@ -33,12 +33,12 @@ export function getEstimatedTokens(formValues: FormValues) {
 
   // Extract values from settings that count towards the token limit
   const {
-    settings: { name = "", workExperience = "", wordLimit = 300 },
+    settings: { name = "", workExperience = "", additionalSettings = "" },
   } = formValues;
 
   const countableFormValues = {
     ...formValues,
-    settings: { name, workExperience, wordLimit },
+    settings: { name, workExperience, additionalSettings },
   };
 
   const formCharacterCount = countChars(countableFormValues);

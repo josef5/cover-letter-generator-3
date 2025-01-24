@@ -4,6 +4,7 @@ import {
   FormField,
   FormItem,
   FormLabel,
+  FormMessage,
 } from "@/components/ui/form";
 import { defaultValues, useAppDataContext } from "@/contexts/app-data-context";
 import { type SettingsValues, settingsSchema } from "@/lib/schemas/form-schema";
@@ -169,7 +170,24 @@ function SettingsForm({ onNavigate }: { onNavigate: () => void }) {
                 )}
               />
               {/* TODO: Add skillset? */}
-              {/* TODO: Add additional settings - e.g. British English */}
+              <FormField
+                control={control}
+                name="additionalSettings"
+                render={({ field }) => (
+                  <FormItem className="flex flex-col gap-1">
+                    <FormLabel className="flex text-xs">
+                      Additional Settings (Optional)
+                      <FormMessage className="text-xs" />
+                    </FormLabel>
+                    <FormControl>
+                      <Textarea
+                        {...field}
+                        className="bg-[hsl(var(--settings-background))]"
+                      />
+                    </FormControl>
+                  </FormItem>
+                )}
+              />
               <Button type="submit" disabled={!isValid}>
                 Save
               </Button>

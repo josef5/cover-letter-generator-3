@@ -28,6 +28,7 @@ export const defaultValues: FormValues = {
     name: "",
     workExperience: "",
     portfolioSite: "",
+    additionalSettings: "",
   },
 } as const;
 
