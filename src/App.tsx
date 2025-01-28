@@ -184,9 +184,9 @@ function AppContent() {
 
   return (
     <>
-      <div className="mx-auto h-screen w-screen max-w-5xl overflow-hidden">
+      <div className="mx-auto h-screen w-screen max-w-5xl overflow-x-hidden">
         <div
-          className={`flex h-full transition-transform duration-500 ease-in-out`}
+          className={`flex transition-transform duration-500 ease-in-out`}
           style={{
             transform: `translateX(${slide === "left" ? "0" : "-100%"})`,
           }}
