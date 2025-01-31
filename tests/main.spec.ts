@@ -104,8 +104,13 @@ describe("Main", () => {
     }
   }
 
-  test("has title", async ({ page }) => {
-    await expect(page).toHaveTitle("Vite + React + TS");
+  test("loads ok", async () => {
+    await expect(submitButton).toBeVisible();
+  });
+
+  test("should not be submittable on load", async () => {
+    const isDisabled = await submitButton?.isDisabled();
+    expect(isDisabled).toBe(true);
   });
 
   test("should not be submittable when required fields are empty", async ({
