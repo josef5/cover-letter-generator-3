@@ -56,7 +56,6 @@ function AppContent() {
     new Promise((resolve) => setTimeout(resolve, ms));
 
   // TODO: Decompose fetch
-  // TODO: Use TanStack Query
   async function fetchCoverLetterText(fromValues: FormValues) {
     setCoverLetterText("");
     setError(null);
@@ -143,6 +142,7 @@ function AppContent() {
           model,
         });
 
+        /* TODO: Remove unnecessary extra layer in data */
         data = { chatCompletion };
       } catch (error) {
         console.error(error);
