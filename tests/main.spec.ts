@@ -152,6 +152,6 @@ describe("Main", () => {
     await page.waitForTimeout(500);
 
     expect(responsePromise).not.toBeNull();
-    expect(page.getByText("Dear Mock,")).toBeInViewport();
+    await expect(page.getByText("Dear Mock,")).toBeInViewport();
   });
 });
