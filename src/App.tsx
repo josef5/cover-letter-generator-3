@@ -1,21 +1,25 @@
 import { ReactNode, useState } from "react";
+import { useFetchCoverLetterText } from "./api/useFetchCoverLetterText";
 import CoverLetterPage from "./components/cover-letter-page";
 import MainForm from "./components/main-form";
 import SettingsForm from "./components/settings-form";
-import { useAppDataContext } from "./contexts/app-data-context";
+import {
+  AppDataContext,
+  defaultValues,
+  useAppDataContext,
+} from "./contexts/app-data-context";
 import "./index.css";
 import { type FormValues } from "./lib/schemas/form-schema";
-import { OpenAI } from "openai";
+import { sleep } from "./lib/utils";
 import { ChatResponse } from "./types/chat";
-import { AppDataContext, defaultValues } from "./contexts/app-data-context";
 
 function AppContent() {
   const [page, setPage] = useState<"main" | "settings" | "cover-letter">(
     "main",
   );
   const [slide, setSlide] = useState<"left" | "right">("left");
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+  const { isLoading, error, fetchCoverLetterText } = useFetchCoverLetterText();
+
   const [usageData, setUsageData] = useState({
     total: 0,
     prompt: 0,
@@ -24,10 +28,38 @@ function AppContent() {
 
   const { coverLetterText, setCoverLetterText } = useAppDataContext();
 
-  function handleSubmit(data: FormValues) {
+  async function handleSubmit(data: FormValues) {
     console.log("Request data :", data);
 
-    fetchCoverLetterText(data);
+    const completion = await fetchCoverLetterText(data);
+
+    if (completion) {
+      handleResponse(completion);
+    }
+  }
+
+  function handleResponse(completion: ChatResponse) {
+    setCoverLetterText(
+      completion?.chatCompletion.choices[0].message.content as string,
+    );
+
+    const {
+      chatCompletion: {
+        usage: { total_tokens, prompt_tokens, completion_tokens },
+      },
+    } = completion as ChatResponse;
+
+    setUsageData({
+      total: total_tokens,
+      prompt: prompt_tokens,
+      completion: completion_tokens,
+    });
+
+    setCoverLetterText(
+      (completion?.chatCompletion.choices[0].message.content as string) ?? "",
+    );
+
+    navigateTo("cover-letter");
   }
 
   async function navigateTo(to: "main" | "settings" | "cover-letter") {
@@ -49,136 +81,6 @@ function AppContent() {
         break;
 
       default:
-    }
-  }
-
-  const sleep = (ms: number) =>
-    new Promise((resolve) => setTimeout(resolve, ms));
-
-  // TODO: Decompose fetch
-  async function fetchCoverLetterText(fromValues: FormValues) {
-    setCoverLetterText("");
-    setError(null);
-    setIsLoading(true);
-
-    let data = null;
-
-    try {
-      /*
-      const data = await import("./mock-response.json");
-      await sleep(1000);
-      /*/
-      const {
-        salutation,
-        jobDescription,
-        model,
-        temperature,
-        wordLimit,
-        additionalNotes,
-        settings: {
-          apiKey,
-          name,
-          workExperience,
-          portfolioSite,
-          skillSet,
-          additionalSettings,
-        },
-      } = fromValues;
-
-      const prompt = `Here is a job description, write a cover letter for this job on behalf of the user: ${jobDescription}.`;
-
-      try {
-        const openai = new OpenAI({ apiKey, dangerouslyAllowBrowser: true });
-
-        const chatCompletion = await openai.chat.completions.create({
-          messages: [
-            {
-              role: "system",
-              content: `You are an expert in recruitment and job applications. Write a cover letter for this job no more than ${wordLimit} words long. Explain why the user is a good fit for the job.`,
-            },
-            {
-              role: "system",
-              content: "Do not start with a subject line",
-            },
-            {
-              role: "system",
-              content: `Only mention skills included in the users work experience. Do not improvise mention of other skills if the user has not specified them.`,
-            },
-            {
-              role: "system",
-              content: `Use the users work experience to explain why they are a good fit for the job: ${workExperience}`,
-            },
-            {
-              role: "system",
-              content: `Make sure to include the salutation ${salutation}`,
-            },
-            {
-              role: "system",
-              content: portfolioSite
-                ? `Include a paragraph with one sentence like: A selection of my work can be viewed at ${portfolioSite}`
-                : "",
-            },
-            {
-              role: "system",
-              content: skillSet
-                ? `The user has the following skills: ${skillSet}`
-                : "",
-            },
-            {
-              role: "user",
-              content: additionalSettings ?? "",
-            },
-            {
-              role: "user",
-              content: additionalNotes ?? "",
-            },
-            {
-              role: "system",
-              content: `Sign off with the users name ${name}`,
-            },
-            { role: "user", content: prompt },
-          ],
-          temperature,
-          model,
-        });
-
-        /* TODO: Remove unnecessary extra layer in data */
-        data = { chatCompletion };
-      } catch (error) {
-        console.error(error);
-        setError((error as Error).message);
-      }
-      //*/
-
-      if (!data) {
-        throw new Error("API response is empty");
-      }
-
-      console.log("Response data :", data);
-
-      const {
-        chatCompletion: {
-          usage: { total_tokens, prompt_tokens, completion_tokens },
-        },
-      } = data as ChatResponse;
-
-      setUsageData({
-        total: total_tokens,
-        prompt: prompt_tokens,
-        completion: completion_tokens,
-      });
-
-      setCoverLetterText(
-        data.chatCompletion.choices[0].message.content as string,
-      );
-
-      navigateTo("cover-letter");
-    } catch (error) {
-      console.error(error);
-
-      setError((error as Error).message);
-    } finally {
-      setIsLoading(false);
     }
   }
 

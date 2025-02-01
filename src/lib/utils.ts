@@ -59,3 +59,6 @@ export function getEstimatedTokens(formValues: FormValues) {
 
   return Math.round(total / 4);
 }
+
+export const sleep = (ms: number) =>
+  new Promise((resolve) => setTimeout(resolve, ms));
