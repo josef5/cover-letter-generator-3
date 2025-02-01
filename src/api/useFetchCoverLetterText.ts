@@ -15,7 +15,7 @@ export function useFetchCoverLetterText() {
 
     try {
       /*
-      data = await import("@/mock-response.json");
+      data = await import("@/../tests/mock-response.json");
       await new Promise((resolve) => setTimeout(resolve, 1000));
       /*/
       const {

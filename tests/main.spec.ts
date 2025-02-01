@@ -1,6 +1,6 @@
 import { test, expect, type Page, Locator } from "@playwright/test";
 import { describe } from "node:test";
-import mockResponse from "../src/mock-response.json" with { type: "json" };
+import mockResponse from "../tests/mock-response.json" with { type: "json" };
 
 let settingsButton: Locator;
 let settingsCloseButton: Locator;
