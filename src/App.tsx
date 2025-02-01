@@ -39,14 +39,10 @@ function AppContent() {
   }
 
   function handleResponse(completion: ChatResponse) {
-    setCoverLetterText(
-      completion?.chatCompletion.choices[0].message.content as string,
-    );
+    setCoverLetterText(completion?.choices[0].message.content as string);
 
     const {
-      chatCompletion: {
-        usage: { total_tokens, prompt_tokens, completion_tokens },
-      },
+      usage: { total_tokens, prompt_tokens, completion_tokens },
     } = completion as ChatResponse;
 
     setUsageData({
@@ -56,7 +52,7 @@ function AppContent() {
     });
 
     setCoverLetterText(
-      (completion?.chatCompletion.choices[0].message.content as string) ?? "",
+      (completion?.choices[0].message.content as string) ?? "",
     );
 
     navigateTo("cover-letter");

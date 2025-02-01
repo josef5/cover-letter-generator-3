@@ -92,8 +92,7 @@ export function useFetchCoverLetterText() {
           model,
         });
 
-        // TODO: Remove unnecessary extra layer in data
-        data = { chatCompletion } as ChatResponse;
+        data = chatCompletion as ChatResponse;
       } catch (error) {
         console.error(error);
         setError((error as Error).message);
