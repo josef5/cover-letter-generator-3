@@ -154,4 +154,30 @@ describe("Main", () => {
     expect(responsePromise).not.toBeNull();
     await expect(page.getByText("Dear Mock,")).toBeInViewport();
   });
+
+  test("should display an error message when the API call fails", async ({
+    page,
+  }) => {
+    await page.route(apiRoute, async (route) => {
+      await route.fulfill({
+        status: 500,
+        contentType: "application/json",
+        body: JSON.stringify({ message: "Internal server error" }),
+      });
+    });
+
+    // Set up response listener
+    const responsePromise = page.waitForResponse(apiRoute);
+
+    await fillOutForm(page);
+
+    submitButton?.click();
+
+    await responsePromise;
+
+    await page.waitForTimeout(500);
+
+    expect(responsePromise).not.toBeNull();
+    await expect(page.getByText("API response is empty")).toBeInViewport();
+  });
 });
