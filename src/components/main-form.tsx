@@ -124,9 +124,18 @@ function MainForm({
       const parsedData = JSON.parse(storedData);
 
       form.reset({ ...form.getValues(), ...parsedData });
-      form.trigger();
+    } else {
+      // If no settings saved save default values to localStorage
+      const [model, temperature, wordLimit] = mainFormSettings;
+
+      localStorage.setItem(
+        "main-settings",
+        JSON.stringify({ model, temperature, wordLimit }),
+      );
     }
-  }, [form]);
+
+      form.trigger();
+  }, [form]); // eslint-disable-line react-hooks/exhaustive-deps
 
   // Update isMainSettingsSaved on main form settings change
   useEffect(() => {
