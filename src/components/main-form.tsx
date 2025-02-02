@@ -134,7 +134,7 @@ function MainForm({
       );
     }
 
-      form.trigger();
+    form.trigger();
   }, [form]); // eslint-disable-line react-hooks/exhaustive-deps
 
   // Update isMainSettingsSaved on main form settings change
@@ -290,6 +290,7 @@ function MainForm({
                   className="self-end"
                   disabled={isMainSettingsSaved}
                   onClick={handleSaveValues}
+                  data-testid="main-settings-save-button"
                 >
                   <Save />
                 </Button>

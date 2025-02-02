@@ -5,6 +5,7 @@ import mockResponse from "../tests/mock-response.json" with { type: "json" };
 let settingsButton: Locator;
 let settingsCloseButton: Locator;
 let submitButton: Locator;
+let mainSettingsSaveButton: Locator;
 
 const apiRoute = "*/**/v1/chat/completions";
 
@@ -81,6 +82,7 @@ describe("Main", () => {
 
     settingsButton = page.getByTestId("settings-button");
     settingsCloseButton = page.getByTestId("settings-close-button");
+    mainSettingsSaveButton = page.getByTestId("main-settings-save-button");
     submitButton = page.getByRole("button", { name: "Generate" });
   });
 
@@ -129,6 +131,22 @@ describe("Main", () => {
 
     const isDisabled = await submitButton?.isDisabled();
     expect(isDisabled).toBe(false);
+  });
+
+  test("should main settings button be disabled on load", async () => {
+    const isDisabled = await mainSettingsSaveButton?.isDisabled();
+
+    expect(isDisabled).toBe(true);
+  });
+
+  test("should main settings update", async ({ page }) => {
+    await page.fill(`input[name='wordLimit']`, "400");
+
+    expect(await mainSettingsSaveButton?.isDisabled()).toBe(false);
+
+    await mainSettingsSaveButton?.click();
+
+    expect(await mainSettingsSaveButton?.isDisabled()).toBe(true);
   });
 
   test("should generate a cover letter", async ({ page }) => {
