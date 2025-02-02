@@ -86,7 +86,7 @@ describe("Main", () => {
 
   async function fillOutForm(page: Page, clearFields = false) {
     // Click the settings button to open the settings form
-    settingsButton?.click();
+    await settingsButton?.click();
     await page.waitForTimeout(500);
 
     // Set values for the settings form
@@ -95,7 +95,7 @@ describe("Main", () => {
     }
 
     // Close the settings form
-    settingsCloseButton.click();
+    await settingsCloseButton.click();
     await page.waitForTimeout(500);
 
     // Set values for the input fields and textareas
@@ -145,7 +145,7 @@ describe("Main", () => {
 
     await fillOutForm(page);
 
-    submitButton?.click();
+    await submitButton?.click();
 
     await responsePromise;
 
@@ -171,7 +171,7 @@ describe("Main", () => {
 
     await fillOutForm(page);
 
-    submitButton?.click();
+    await submitButton?.click();
 
     await responsePromise;
 
