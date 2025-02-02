@@ -31,6 +31,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "./ui/select";
+import { Save } from "lucide-react";
 
 function MainForm({
   onNavigate,
@@ -44,6 +45,7 @@ function MainForm({
   error?: string | null;
 }) {
   const [estimatedTokens, setEstimatedTokens] = useState(0);
+  const [isMainSettingsSaved, setIsMainSettingsSaved] = useState(true);
   const { appData, isSettingsValid, coverLetterText } = useAppDataContext();
   const models = mainFormSchema.shape.model._def.values;
 
@@ -59,18 +61,41 @@ function MainForm({
     watch,
   } = form;
 
+  const mainFormSettings = form.getValues([
+    "model",
+    "temperature",
+    "wordLimit",
+  ]);
+
   function handleSubmit(data: MainFormValues) {
     const compositeData = { ...data, settings: appData.settings };
     onSubmit(compositeData);
   }
 
+  function handleSaveValues(event: React.MouseEvent<HTMLButtonElement>) {
+    event.preventDefault();
+
+    const { model, temperature, wordLimit } = form.getValues();
+
+    localStorage.setItem(
+      "main-settings",
+      JSON.stringify({ model, temperature, wordLimit }),
+    );
+
+    // Update the form state so the button is disabled
+    form.trigger();
+  }
+
   // Calculate estimated tokens on main form change
   useEffect(() => {
+    // Use watch() to react to real-time changes in the form
+    // i.e. before state is updated
     const subscription = watch((formValues) => {
       const consolidatedValues = {
         ...formValues,
         settings: appData.settings,
       } as FormValues;
+
       const tokens = getEstimatedTokens(consolidatedValues);
 
       setEstimatedTokens(tokens);
@@ -85,10 +110,33 @@ function MainForm({
       ...form.getValues(),
       settings: appData.settings,
     } as FormValues;
+
     const tokens = getEstimatedTokens(consolidatedValues);
 
     setEstimatedTokens(tokens);
   }, [appData]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  // Update main form settings from localStorage, on mount
+  useEffect(() => {
+    const storedData = localStorage.getItem("main-settings");
+
+    if (storedData) {
+      const parsedData = JSON.parse(storedData);
+
+      form.reset({ ...form.getValues(), ...parsedData });
+      form.trigger();
+    }
+  }, [form]);
+
+  // Update isMainSettingsSaved on main form settings change
+  useEffect(() => {
+    const storedData = localStorage.getItem("main-settings");
+    const [model, temperature, wordLimit] = mainFormSettings;
+
+    setIsMainSettingsSaved(
+      JSON.stringify({ model, temperature, wordLimit }) === storedData,
+    );
+  }, [form, mainFormSettings]);
 
   return (
     <div className="relative flex h-full min-w-full flex-col p-8 text-left">
@@ -227,6 +275,15 @@ function MainForm({
                     </FormItem>
                   )}
                 />
+                <Button
+                  variant="outline"
+                  size="icon"
+                  className="self-end"
+                  disabled={isMainSettingsSaved}
+                  onClick={handleSaveValues}
+                >
+                  <Save />
+                </Button>
               </div>
               <FormField
                 control={control}
