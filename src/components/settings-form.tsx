@@ -82,6 +82,7 @@ function SettingsForm({ onNavigate }: { onNavigate: () => void }) {
         size="icon"
         className="absolute right-4 top-4"
         onClick={onNavigate}
+        data-testid="settings-close-button"
       >
         <X />
       </Button>

@@ -145,6 +145,7 @@ function MainForm({
         size="icon"
         className={`absolute right-4 top-4 ${!isSettingsValid ? "text-red-500" : ""}`}
         onClick={() => onNavigate("settings")}
+        data-testid="settings-button"
       >
         <Settings />
       </Button>
@@ -187,7 +188,6 @@ function MainForm({
                   </FormItem>
                 )}
               />
-              {/* TODO: Make these saveable */}
               <div className="row-of-inputs flex justify-between gap-4">
                 <FormField
                   control={control}

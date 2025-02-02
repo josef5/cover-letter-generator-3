@@ -79,8 +79,8 @@ describe("Main", () => {
   test.beforeEach(async ({ page }) => {
     await page.goto("http://localhost:5173");
 
-    settingsButton = page.getByRole("button").first();
-    settingsCloseButton = page.getByRole("button").nth(2);
+    settingsButton = page.getByTestId("settings-button");
+    settingsCloseButton = page.getByTestId("settings-close-button");
     submitButton = page.getByRole("button", { name: "Generate" });
   });
 
