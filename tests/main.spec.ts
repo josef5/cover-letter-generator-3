@@ -78,7 +78,7 @@ const settingsFields = requiredInputFields.filter(
 
 describe("Main", () => {
   test.beforeEach(async ({ page }) => {
-    await page.goto("http://localhost:5173");
+    await page.goto("/");
 
     settingsButton = page.getByTestId("settings-button");
     settingsCloseButton = page.getByTestId("settings-close-button");
