@@ -133,8 +133,6 @@ function MainForm({
         JSON.stringify({ model, temperature, wordLimit }),
       );
     }
-
-    form.trigger();
   }, [form]); // eslint-disable-line react-hooks/exhaustive-deps
 
   // Update isMainSettingsSaved on main form settings change
